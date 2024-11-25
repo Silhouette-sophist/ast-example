@@ -1,28 +1,35 @@
 package main
 
 import (
+	"ast-example/service"
 	"ast-example/visitor"
 	"fmt"
-	"go/ast"
-	"go/parser"
-	"go/token"
-	"log"
+	"strings"
 )
 
 func main() {
-	// 解析 Go 源文件
-	fset := token.NewFileSet()
-	node, err := parser.ParseDir(fset, "/Users/silhouette/work-practice/gin-example", nil, 0)
+	// 1.获取所有依赖包及其路径
+	rootDir := "/Users/silhouette/work-practice/gin-example"
+	relatedPkgs := []string{"gin-example", "github.com/gin-gonic/gin"}
+	depsMap, err := service.QueryProjectDeps(rootDir)
 	if err != nil {
-		log.Fatal(err)
+		return
 	}
-	// 创建一个 FunctionVisitor 实例
-	visitor := &visitor.FuncVisitor{}
-	// 遍历每个包中的文件
-	for _, pkg := range node {
-		for _, file := range pkg.Files {
-			fmt.Printf("file: %s\n", file.Name)
-			ast.Walk(visitor, file)
+	// 2.对所有关联依赖包收集所有函数
+	infos := make([]*visitor.FunctionInfo, 0)
+	for dir, pkg := range depsMap {
+		for _, relatedPkg := range relatedPkgs {
+			if strings.Contains(relatedPkg, pkg) {
+				fmt.Printf("deps dir %s pkg %s\n", dir, pkg)
+				methods, err := service.TransversePkgMethods(dir)
+				if err != nil {
+					return
+				}
+				for _, method := range methods {
+					infos = append(infos, method)
+				}
+			}
 		}
 	}
+	fmt.Println("infos:", infos)
 }
