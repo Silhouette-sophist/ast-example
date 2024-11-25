@@ -41,6 +41,8 @@ func QueryProjectDeps(rootDir string) (map[string]string, error) {
 				continue
 			}
 			depMap[dir] = pkg
+		} else {
+			fmt.Printf("invalid dep %s len\n", dep)
 		}
 	}
 	return depMap, nil
