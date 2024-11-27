@@ -13,12 +13,14 @@ import (
 )
 
 type CommonFuncVisitor struct {
-	RootDir   string
-	Pkg       string
-	RFile     string
-	AFile     string
-	Fset      *token.FileSet
-	Functions []*dto.FunctionInfo
+	RootDir            string
+	Pkg                string
+	RFile              string
+	AFile              string
+	Fset               *token.FileSet
+	Functions          []*dto.FunctionInfo
+	LastFuncName       string
+	LastAnonymousIndex int
 }
 
 // Visit https://poe.com/s/R6ak4jHDTYI6SZChp6Pk
@@ -62,6 +64,7 @@ func (v *CommonFuncVisitor) Visit(node ast.Node) ast.Visitor {
 			ReturnTypes: returnTypes,
 			Params:      params,
 		})
+		v.LastFuncName = funcName
 	case *ast.FuncLit:
 		// 提取匿名函数的信息
 		startPos := v.Fset.Position(fn.Pos())
@@ -88,11 +91,16 @@ func (v *CommonFuncVisitor) Visit(node ast.Node) ast.Visitor {
 				}
 			}
 		}
+		funcName := ""
+		if v.LastFuncName != "" {
+			v.LastAnonymousIndex++
+			funcName = fmt.Sprintf("%s$%d", v.LastFuncName, v.LastAnonymousIndex)
+		}
 		// 在匿名函数中没有名称，使用特定字符串表示
 		v.Functions = append(v.Functions, &dto.FunctionInfo{
 			AFile:       v.AFile,
 			RFile:       v.RFile,
-			Name:        "anonymous function", // 使用占位符
+			Name:        funcName,
 			StartLine:   startPos.Line,
 			EndLine:     endPos.Line,
 			Hash:        hash,
