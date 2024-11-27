@@ -31,6 +31,8 @@ type FileSet struct {
 - 采集匿名函数信息
 - 采集函数含有receiver的信息
 
+https://poe.com/s/R6ak4jHDTYI6SZChp6Pk
+
 #### 采集代码块信息
 - 采集普通代码块信息
 - 采集分支代码块信息，switch、select、if嵌套等

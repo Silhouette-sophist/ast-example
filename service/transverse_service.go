@@ -98,7 +98,8 @@ func CommonTransverseDir(rootDir string, relatedPkgs ...string) ([]*dto.Function
 	infos := make([]*dto.FunctionInfo, 0)
 	for dir, pkg := range depsMap {
 		for _, relatedPkg := range relatedPkgs {
-			if !strings.HasPrefix(relatedPkg, pkg) {
+			fmt.Printf("xxx %s yyy %s\n", relatedPkg, pkg)
+			if !strings.HasPrefix(pkg, relatedPkg) {
 				fmt.Printf("not related pkg %s\n", pkg)
 				continue
 			}

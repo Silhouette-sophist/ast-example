@@ -10,6 +10,7 @@ type FunctionInfo struct {
 	Hash        string
 	Params      []ParamInfo
 	ReturnTypes []string
+	Receiver    *ParamInfo
 }
 
 type ParamInfo struct {

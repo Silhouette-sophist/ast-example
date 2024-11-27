@@ -53,6 +53,20 @@ func (v *CommonFuncVisitor) Visit(node ast.Node) ast.Visitor {
 				}
 			}
 		}
+		// 提取receiver，只有具名函数才有
+		// 提取接收者信息
+		var receiver *dto.ParamInfo
+		if fn.Recv != nil && len(fn.Recv.List) > 0 {
+			for _, recv := range fn.Recv.List {
+				receiverType := formatType(recv.Type)
+				for _, name := range recv.Names {
+					receiver = &dto.ParamInfo{
+						Name: name.Name,
+						Type: receiverType,
+					}
+				}
+			}
+		}
 		// 将函数信息添加到列表
 		v.Functions = append(v.Functions, &dto.FunctionInfo{
 			AFile:       v.AFile,
@@ -63,6 +77,7 @@ func (v *CommonFuncVisitor) Visit(node ast.Node) ast.Visitor {
 			Hash:        hash,
 			ReturnTypes: returnTypes,
 			Params:      params,
+			Receiver:    receiver,
 		})
 		v.LastFuncName = funcName
 	case *ast.FuncLit:
