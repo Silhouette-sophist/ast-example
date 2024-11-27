@@ -6,7 +6,8 @@ import "testing"
 func TestTransverseDir(t *testing.T) {
 	// 1.获取所有依赖包及其路径
 	rootDir := "/Users/silhouette/work-practice/gin-example"
-	relatedPkgs := []string{"gin-example", "github.com/gin-gonic/gin"}
+	// relatedPkgs := []string{"gin-example", "github.com/gin-gonic/gin"}
+	relatedPkgs := []string{"gin-example"}
 	functionInfos, err := TransverseDir(rootDir, relatedPkgs...)
 	if err != nil {
 		t.Errorf("TransverseDir err %v", err)
