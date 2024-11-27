@@ -16,18 +16,21 @@ func TransversePkgMethods(rootDir, pkgDir string) ([]*visitor.FunctionInfo, erro
 	if err != nil {
 		log.Fatal(err)
 	}
-	// 2.创建一个 FunctionVisitor用于采集信息
-	v := &visitor.FunctionVisitor{
-		RootDir: rootDir,
-		Fset:    fset,
-	}
-	// 遍历每个包中的文件
+	// 2.遍历每个包中的文件
+	functionInfos := make([]*visitor.FunctionInfo, 0)
 	for _, pkg := range node {
 		fmt.Printf("TransversePkgMethods pkg %s, files %d\n", pkg.Name, len(pkg.Files))
 		for _, file := range pkg.Files {
 			fmt.Printf("TransversePkgMethods file: %s\n", file.Name)
+			v := &visitor.FunctionVisitor{
+				RootDir: rootDir,
+				Pkg:     pkg.Name,
+				File:    file.Name.Name,
+				Fset:    fset,
+			}
 			ast.Walk(v, file)
+			functionInfos = append(functionInfos, v.Functions...)
 		}
 	}
-	return v.Functions, nil
+	return functionInfos, nil
 }

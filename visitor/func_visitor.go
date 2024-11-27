@@ -36,6 +36,8 @@ type FunctionInfo struct {
 // FunctionVisitor 结构体，用于收集函数信息
 type FunctionVisitor struct {
 	RootDir   string
+	Pkg       string
+	File      string
 	Fset      *token.FileSet
 	Functions []*FunctionInfo
 }
