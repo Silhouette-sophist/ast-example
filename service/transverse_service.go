@@ -109,6 +109,7 @@ func CommonTransverseDir(rootDir string, relatedPkgs ...string) ([]*dto.Function
 				continue
 			}
 			for _, file := range files {
+				// TODO 注意，如果这里跳过文件夹，那么要求当前包依赖了文件夹中的文件，否则文件夹中的文件就不会遍历出来
 				if file.IsDir() {
 					fmt.Printf("skip dir %v\n", file.Name())
 					continue
