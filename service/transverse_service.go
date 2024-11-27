@@ -115,7 +115,7 @@ func CommonTransverseDir(rootDir string, relatedPkgs ...string) ([]*dto.Function
 					continue
 				}
 				absFile := fmt.Sprintf("%s/%s", dir, file.Name())
-				rel, err := filepath.Rel(dir, absFile)
+				rel, err := filepath.Rel(rootDir, absFile)
 				if err != nil {
 					fmt.Printf("not root dir file %v\n", err)
 					continue
