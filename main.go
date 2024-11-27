@@ -21,7 +21,7 @@ func main() {
 		for _, relatedPkg := range relatedPkgs {
 			if strings.Contains(relatedPkg, pkg) {
 				fmt.Printf("deps dir %s pkg %s\n", dir, pkg)
-				methods, err := service.TransversePkgMethods(dir)
+				methods, err := service.TransversePkgMethods(rootDir, dir)
 				if err != nil {
 					return
 				}
@@ -31,5 +31,5 @@ func main() {
 			}
 		}
 	}
-	fmt.Println("infos:", infos)
+	service.WriteJsonToFile("method.json", infos)
 }

@@ -26,6 +26,7 @@ func (receiver FuncVisitor) Visit(node ast.Node) ast.Visitor {
 
 // FunctionInfo 结构体，用于存储函数信息
 type FunctionInfo struct {
+	RFile     string
 	Name      string
 	StartLine int
 	EndLine   int
@@ -34,6 +35,7 @@ type FunctionInfo struct {
 
 // FunctionVisitor 结构体，用于收集函数信息
 type FunctionVisitor struct {
+	RootDir   string
 	Fset      *token.FileSet
 	Functions []*FunctionInfo
 }
