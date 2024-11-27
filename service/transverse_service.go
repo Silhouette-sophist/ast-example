@@ -88,3 +88,53 @@ func TransverseDir(rootDir string, relatedPkgs ...string) ([]*dto.FunctionInfo, 
 	}
 	return infos, nil
 }
+
+// CommonTransverseDir 遍历目录下指定包路径的函数
+func CommonTransverseDir(rootDir string, relatedPkgs ...string) ([]*dto.FunctionInfo, error) {
+	depsMap, err := QueryProjectDeps(rootDir)
+	if err != nil {
+		return nil, err
+	}
+	infos := make([]*dto.FunctionInfo, 0)
+	for dir, pkg := range depsMap {
+		for _, relatedPkg := range relatedPkgs {
+			if !strings.HasPrefix(relatedPkg, pkg) {
+				fmt.Printf("not related pkg %s\n", pkg)
+				continue
+			}
+			files, err := os.ReadDir(dir)
+			if err != nil {
+				fmt.Printf("read dir%s err %v\n", pkg, err)
+				continue
+			}
+			for _, file := range files {
+				if file.IsDir() {
+					fmt.Printf("skip dir %v\n", file.Name())
+					continue
+				}
+				absFile := fmt.Sprintf("%s/%s", dir, file.Name())
+				rel, err := filepath.Rel(dir, absFile)
+				if err != nil {
+					fmt.Printf("not root dir file %v\n", err)
+					continue
+				}
+				RFile := rel
+				fileSet := token.NewFileSet()
+				if contentBytes, err := os.ReadFile(absFile); err == nil {
+					if parseFile, err := parser.ParseFile(fileSet, absFile, contentBytes, parser.ParseComments); err == nil {
+						v := &visitor.CommonFuncVisitor{
+							RootDir: rootDir,
+							Pkg:     pkg,
+							RFile:   RFile,
+							AFile:   absFile,
+							Fset:    fileSet,
+						}
+						ast.Walk(v, parseFile)
+						infos = append(infos, v.Functions...)
+					}
+				}
+			}
+		}
+	}
+	return infos, nil
+}

@@ -21,7 +21,7 @@ type CommonFuncVisitor struct {
 }
 
 // Visit https://poe.com/s/R6ak4jHDTYI6SZChp6Pk
-func (v CommonFuncVisitor) Visit(node ast.Node) ast.Visitor {
+func (v *CommonFuncVisitor) Visit(node ast.Node) ast.Visitor {
 	switch fn := node.(type) {
 	case *ast.FuncDecl:
 		// 提取具名函数、起始行号和结束行号
