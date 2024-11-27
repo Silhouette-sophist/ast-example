@@ -1,8 +1,8 @@
 package main
 
 import (
+	"ast-example/dto"
 	"ast-example/service"
-	"ast-example/visitor"
 	"fmt"
 	"strings"
 )
@@ -16,7 +16,7 @@ func main() {
 		return
 	}
 	// 2.对所有关联依赖包收集所有函数
-	infos := make([]*visitor.FunctionInfo, 0)
+	infos := make([]*dto.FunctionInfo, 0)
 	for dir, pkg := range depsMap {
 		for _, relatedPkg := range relatedPkgs {
 			if strings.Contains(relatedPkg, pkg) {
