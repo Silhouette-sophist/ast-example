@@ -1,6 +1,7 @@
 package service
 
 import (
+	"ast-example/dto"
 	"ast-example/visitor"
 	"fmt"
 	"go/ast"
@@ -12,7 +13,7 @@ import (
 	"strings"
 )
 
-func TransversePkgMethods(rootDir, pkgDir string) ([]*visitor.FunctionInfo, error) {
+func TransversePkgMethods(rootDir, pkgDir string) ([]*dto.FunctionInfo, error) {
 	// 1.创建fileSet，通过parse解析指定目录
 	fset := token.NewFileSet()
 	node, err := parser.ParseDir(fset, pkgDir, nil, 0)
@@ -20,7 +21,7 @@ func TransversePkgMethods(rootDir, pkgDir string) ([]*visitor.FunctionInfo, erro
 		log.Fatal(err)
 	}
 	// 2.遍历每个包中的文件
-	functionInfos := make([]*visitor.FunctionInfo, 0)
+	functionInfos := make([]*dto.FunctionInfo, 0)
 	for _, pkg := range node {
 		fmt.Printf("TransversePkgMethods pkg %s, files %d\n", pkg.Name, len(pkg.Files))
 		for _, file := range pkg.Files {
@@ -39,12 +40,12 @@ func TransversePkgMethods(rootDir, pkgDir string) ([]*visitor.FunctionInfo, erro
 }
 
 // TransverseDir 遍历目录下指定包路径的函数
-func TransverseDir(rootDir string, relatedPkgs ...string) ([]*visitor.FunctionInfo, error) {
+func TransverseDir(rootDir string, relatedPkgs ...string) ([]*dto.FunctionInfo, error) {
 	depsMap, err := QueryProjectDeps(rootDir)
 	if err != nil {
 		return nil, err
 	}
-	infos := make([]*visitor.FunctionInfo, 0)
+	infos := make([]*dto.FunctionInfo, 0)
 	for dir, pkg := range depsMap {
 		for _, relatedPkg := range relatedPkgs {
 			if !strings.HasPrefix(relatedPkg, pkg) {
