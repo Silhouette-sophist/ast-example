@@ -41,3 +41,15 @@ func TestCommonCodeBlockTransverseDir(t *testing.T) {
 	}
 	t.Logf("CommonCodeBlockTransverseDir size %d", len(blockInfos))
 }
+
+func TestInnerCodeBlockTransverseDir(t *testing.T) {
+	rootDir := "/Users/silhouette/work-practice/gin-example"
+	// relatedPkgs := []string{"gin-example", "github.com/gin-gonic/gin"}
+	relatedPkgs := []string{"gin-example"}
+	blockInfos, err := InnerCodeBlockTransverseDir(rootDir, relatedPkgs...)
+	if err != nil {
+		t.Errorf("InnerCodeBlockTransverseDir err %v", err)
+		return
+	}
+	t.Logf("InnerCodeBlockTransverseDir size %d", len(blockInfos))
+}

@@ -38,7 +38,28 @@ https://poe.com/s/R6ak4jHDTYI6SZChp6Pk
 - 采集分支代码块信息，switch、select、if嵌套等
 - 采集代码块所属函数
 
+```go
+// 按照显示或者隐式括号划分代码块，作为统一的执行单元
+func(v *InnerBlockVisitor) Visit(node ast.Node) ast.Visitor {
+	switch fn := node.(type) {
+	case *ast.BlockStmt:
+		if len(fn.List) > 0 {
+			for _, stmt := range fn.List {
+				switch stmt.(type) {
+				case *ast.CaseClause:
+					pos := v.Fset.Position(stmt.Pos())
+					fmt.Printf("case clause...%v\n", pos)
+				case *ast.CommClause:
+					pos := v.Fset.Position(stmt.Pos())
+					fmt.Printf("common clause...%v\n", pos)
+				}
+			}
+		}
+	}
+	return v
+}
+```
+
 #### 代码唯一标识（非直接依赖版本）
 - 代码块hash（文件相对路径、函数名、内容）
 - 临近hash（前代码块hash+代码块hash+后代码块hash）
-
